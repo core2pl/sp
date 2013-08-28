@@ -32,6 +32,7 @@ class user extends \engine\object {
             unset($_SESSION['user']);
             session_unset();
             session_destroy();
+            header('Location: /');
         }
     }
 
@@ -39,7 +40,8 @@ class user extends \engine\object {
         $out = core::$output;
         $out->set('user', array(
             'logged' => $this->isLoggedIn(),
-            'email' => $this->properties['email']
+            'email' => $this->properties['email'],
+            'action' => $this->vars[':action']
         ));
     }
 
