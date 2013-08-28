@@ -24,15 +24,26 @@ class user extends \engine\object {
 
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
-        if (isset($vars[':action']) && $vars[':action'] == 'login' && isset($_POST['email']) && isset($_POST['email'])
-            && $_POST['email'] == $this->properties['email'] && md5($_POST['password']) == $this->properties['password']) {
-            $_SESSION['user_id'] = $this->ID;
-        }
-        if (isset($vars[':action']) && $vars[':action'] == 'logout') {
-            unset($_SESSION['user']);
-            session_unset();
-            session_destroy();
-            header('Location: /');
+        if (isset($vars[':action'])) {
+            switch ($vars[':action']) {
+                case 'login': {
+                    if (isset($_POST['email']) && isset($_POST['password']) ){
+                        if ($_POST['email'] == $this->properties['email'] && md5($_POST['password']) == $this->properties['password']) {
+                            $_SESSION['user_id'] = $this->ID;
+                        } else {
+                            header('Location: /user/login-failure');
+                        }
+                    }
+                }
+                    break;
+                case 'logout': {
+                        unset($_SESSION['user']);
+                        session_unset();
+                        session_destroy();
+                        header('Location: /');
+                }
+                    break;
+            }
         }
     }
 
@@ -41,7 +52,7 @@ class user extends \engine\object {
         $out->set('user', array(
             'logged' => $this->isLoggedIn(),
             'email' => $this->properties['email'],
-            'action' => $this->vars[':action']
+            'login_failure' => (($this->vars[':action'] == 'login-failure') ? true : false)
         ));
     }
 
