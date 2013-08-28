@@ -44,9 +44,9 @@ class objects {
                     $type = $db->_select('types')
                         ->_where('id=:id')->_bind(':id', $object['type_id'])
                         ->_execute();
-                    if (!isset($obj[$type['class']]) || count($obj[$type['class']]->vars) < count($vars)) {
+//                    if (!isset($obj[$type['class']]) || count($obj[$type['class']]->vars) < count($vars)) {
                          $obj[$type['class']] = new $type['class']($object['id'],$vars,$routing['routing']);
-                    }
+//                    }
                 }
             }
         }
@@ -62,15 +62,17 @@ class objects {
     public function install($class) {
         $obj = new $class();
         $db = core::$db;
-        $result = $db->_createTable($obj->table)
-                     ->_addCol('id', 'integer', true, true)
-                     ->_addCol('object_id', 'integer');
-        foreach($obj->schema as $col=>$type) {
-            $result = $result->_addCol($col, $type);
+        if ($obj->table) {
+            $result = $db->_createTable($obj->table)
+                ->_addCol('id', 'integer', true, true)
+                ->_addCol('object_id', 'integer');
+            foreach($obj->schema as $col=>$type) {
+                $result = $result->_addCol($col, $type);
+            }
+            $result->_addKey('id', true);
+            $result->_addKey('object_id', false, true);
+            $result->_execute();
         }
-        $result->_addKey('id', true);
-        $result->_addKey('object_id', false, true);
-        $result->_execute();
         $db->_insert('types')->_value('class', ':class')->_bind(':class',$class)->_execute();
     }
 

@@ -1,0 +1,46 @@
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="fright">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default" onclick="getElementById('edit-form').submit();">Zapisz</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Usuń</a></li>
+                    <li class="divider"></li>
+                    <li><a href="#">Anuluj</a></li>
+                </ul>
+            </div>
+        </div>
+        <form class="bs-example form-horizontal" id="edit-form" method="post" action="/objects/{{ object.ID }}/update">
+            <fieldset>
+                <legend>{{ object.class }} #{{ object.ID }} </legend>
+                {%  for name, type in object.schema %}
+                    {% if type == 'string' %}
+                        <div class="form-group">
+                            <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                            <div class="col-lg-10">
+                                <input type="text" class="form-control" id="inputEmail" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if type == 'password' %}
+                        <div class="form-group">
+                            <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                            <div class="col-lg-10">
+                                <input type="password" class="form-control" id="inputPassword" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if type == 'text' %}
+                        <div class="form-group">
+                            <label for="textArea" class="col-lg-2 control-label">{{ name }}</label>
+                            <div class="col-lg-10">
+                                <textarea class="form-control" rows="3" id="textArea" name="{{ name }}">{{ object.properties[name] }}</textarea>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </fieldset>
+        </form>
+    </div>
+</div>

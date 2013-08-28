@@ -22,6 +22,7 @@ class installer extends \engine\object {
         parent::__construct($ID, $vars, $routing);
         $objects = core::$objects;
 //        var_dump($vars);
+//        var_dump($this->vars);
         if (isset($vars[':action'])) {
             switch ($vars[':action']) {
                 case 'install': {
