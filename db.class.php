@@ -189,7 +189,7 @@ class db {
         }
         if ($this->queryType == 'create-table') {
             $this->stmt .= '`'.$name.'`';
-            $this->stmt .= ' '.str_replace(array('string','text','integer'),array('CHAR(255)','TEXT','INT'),$type);
+            $this->stmt .= ' '.str_replace(array('string', 'password', 'text', 'integer'),array('CHAR(255)', 'CHAR(255)', 'TEXT', 'INT'),$type);
             if ($notNull) $this->stmt .= ' NOT NULL';
             if ($autoIncrement) $this->stmt .= ' AUTO_INCREMENT';
         }
