@@ -31,7 +31,8 @@ class box extends \engine\object {
         $output = core::$output;
         $output->set('box', array(
             'title' => $this->properties['title'],
-            'content' => (empty($this->properties['template'])) ? $this->properties['content'] : $output->render($this->properties['template'], $output->dataCache)
+            'content' => (empty($this->properties['template'])) ? $this->properties['content'] : $output->render($this->properties['template'], $output->dataCache),
+            'vars' => $this->vars
         ));
     }
 }
