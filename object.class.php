@@ -36,13 +36,15 @@ class object {
         $this->vars = $vars;
         $this->routing = $routing;
         $db = core::$db;
-        $properties = $db->_select($this->table)
-                               ->_where('object_id=:id')->_bind(':id', $this->ID)
-                               ->_execute(false);
-        if (!$properties) return;
-        foreach ($properties as $name=>$value) {
-            if (!in_array($name, array('id', 'object_id'))) {
-                $this->properties[$name] = $value;
+        if ($this->table && $db->_tableExists($this->table)) {
+            $properties = $db->_select($this->table)
+                ->_where('object_id=:id')->_bind(':id', $this->ID)
+                ->_execute(false);
+            if (!$properties) return;
+            foreach ($properties as $name=>$value) {
+                if (!in_array($name, array('id', 'object_id'))) {
+                    $this->properties[$name] = $value;
+                }
             }
         }
     }
