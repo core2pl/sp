@@ -218,6 +218,15 @@ class db {
         return true;
     }
 
+    public function _tableExists($table) {
+        $return = $this->pdo->query('SHOW TABLES LIKE \''.$table.'\'');
+        if ($return->fetch()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

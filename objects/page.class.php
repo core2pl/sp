@@ -39,8 +39,11 @@ class page extends \engine\object {
     public function setOutput($async = false) {
         parent::setOutput($async);
         $output = \engine\core::$output;
-        $output->set('page_id', $this->ID);
-        $output->set('page', $this->properties);
+        $output->set('page', array(
+            'title' => $this->properties['title'],
+            'content' => (empty($this->properties['template'])) ? $this->properties['content'] : $output->render($this->properties['template'], $output->dataCache),
+            'vars' => $this->vars
+        ));
         return $output;
     }
 
