@@ -1,0 +1,18 @@
+{% if not installer.installed %}
+    <form action="/installer/install" method="post" class="bs-example form-horizontal">
+        <fieldset>
+            <div class="form-group">
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="inputDefault" placeholder="Klasa" name="class-name">
+                </div>
+                <button type="submit" class="btn btn-primary">Zainstaluj</button>
+            </div>
+        </fieldset>
+    </form>
+{% else %}
+    Zainstalowano klasę: {{ installer.class }}.<br />
+    Następuje przekierowanie...
+    <script type="text/javascript">
+        setTimeout(function() { window.location = '/installer/show'; }, 2000);
+    </script>
+{% endif %}
