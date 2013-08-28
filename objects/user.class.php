@@ -18,7 +18,7 @@ class user extends \engine\object {
 
     public $schema = array(
         'login' => 'string',
-        'password' => 'string',
+        'password' => 'password',
         'email' => 'string'
     );
 
@@ -30,7 +30,7 @@ class user extends \engine\object {
                     if (isset($_POST['email']) && isset($_POST['password']) ){
                         if ($_POST['email'] == $this->properties['email'] && md5($_POST['password']) == $this->properties['password']) {
                             $_SESSION['user_id'] = $this->ID;
-                        } else {
+                        } elseif ($_POST['email'] == $this->properties['email']) {
                             header('Location: /user/login-failure');
                         }
                     }
@@ -50,6 +50,7 @@ class user extends \engine\object {
     public function setOutput($async = false) {
         $out = core::$output;
         $out->set('user', array(
+            'id' => $this->ID,
             'logged' => $this->isLoggedIn(),
             'email' => $this->properties['email'],
             'login_failure' => (($this->vars[':action'] == 'login-failure') ? true : false)
