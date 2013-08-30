@@ -53,7 +53,6 @@ class page extends \engine\object {
             'content' => $content,
             'vars' => $this->vars
         ));
-//        var_dump($output->dataCache);
         return $output;
     }
 
