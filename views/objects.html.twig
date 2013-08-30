@@ -7,7 +7,7 @@
                 <ul class="dropdown-menu">
                     <li><a href="#">Usuń</a></li>
                     <li class="divider"></li>
-                    <li><a href="#">Anuluj</a></li>
+                    <li><a href="/">Anuluj</a></li>
                 </ul>
             </div>
         </div>
@@ -36,6 +36,17 @@
                             <label for="textArea" class="col-lg-2 control-label">{{ name }}</label>
                             <div class="col-lg-10">
                                 <textarea class="form-control" rows="3" id="textArea" name="{{ name }}">{{ object.properties[name] }}</textarea>
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% if type == 'boolean' %}
+                        <div class="form-group">
+                            <div class="col-lg-10">
+                                <div class="checkbox">
+                                    <label>
+                                        <input name="{{ name }}" value="1" type="checkbox"{% if object.properties[name] %} checked{% endif %}> {{ name }}
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     {% endif %}

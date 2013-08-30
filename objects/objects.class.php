@@ -37,6 +37,7 @@ class objects extends \engine\object {
 //                    var_dump($_POST);
 //                    if ($obj->table) {
                         $result = $db->_update($obj->table);
+                                   var_dump($_POST);
                         foreach($obj->schema as $key=>$type) {
                             $result = $result->_set($key, ':'.$key)->_bind(':'.$key, $_POST[$key]);
                         }

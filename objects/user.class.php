@@ -17,14 +17,17 @@ class user extends \engine\object {
     public $table = 'users';
 
     public $schema = array(
-        'login' => 'string',
+        'email' => 'string',
         'password' => 'password',
-        'email' => 'string'
+        'admin' => 'boolean'
     );
+
+    public $admin = false;
 
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
-        if (isset($vars[':action'])) {
+        $this->admin = ($this->properties['admin']) == 1 ? true : false;
+        /*if (isset($vars[':action'])) {
             switch ($vars[':action']) {
                 case 'login': {
                     if (isset($_POST['email']) && isset($_POST['password']) ){
@@ -44,17 +47,17 @@ class user extends \engine\object {
                 }
                     break;
             }
-        }
+        }*/
     }
 
     public function setOutput($async = false) {
         $out = core::$output;
-        $out->set('user', array(
+        /*$out->set('user', array(
             'id' => $this->ID,
             'logged' => $this->isLoggedIn(),
             'email' => $this->properties['email'],
             'login_failure' => (($this->vars[':action'] == 'login-failure') ? true : false)
-        ));
+        ));*/
     }
 
     public function isLoggedIn() {

@@ -32,16 +32,19 @@ class router {
         preg_match_all('#:[a-zA-Z0-9_*]+#',$routing, $vars);
         $uri_array = preg_split('#[\s/]+#', $uri);
         $routing_array = preg_split('#[\s/]+#', $routing);
+        if (in_array(':**', $routing_array)) return true;
         foreach ($uri_array as $key=>$step) {
+//            var_dump($routing_array);
             if (!isset($routing_array[$key])) {
                 return false;
             } elseif (preg_match('#:[a-zA-Z0-9_\*]#', $routing_array[$key])) {
                 $variables[$routing_array[$key]] = $uri_array[$key];
-            } elseif (preg_match('#:[a-zA-Z0-9_]#', $routing_array[$key])){
-
-            } elseif (preg_match('#:\*#', $routing_array[$key]) && $key >= array_search(':*', $routing_array)) {
-                $vars = $variables;
-                return true;
+//                var_dump($routing_array[$key]);
+                if (($routing_array[$key] == ':**') || ($routing_array[$key] == ':*' && $key >= array_search(':*', $routing_array))) {
+                    $vars = $variables;
+//                    var_dump('ok');
+                    return true;
+                }
             } elseif ($routing_array[$key] != $uri_array[$key]) {
                 return false;
             } elseif (count($routing_array) != count($uri_array)) {

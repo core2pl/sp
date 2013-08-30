@@ -10,26 +10,64 @@
 namespace engine\objects;
 
 
+use engine\core;
+
 class users extends \engine\object {
 
-    public $core;
+    public $user = null;
+    public $content;
+    public $table = false;
+    public $action = false;
+    public $template = 'users.html.twig';
 
-    public function __construct($core) {
-        $this->core = $core;
-        parent::__construct($core);
-    }
 
-    public function showAction() {
-        if ($this->core->input->get('login_username') != false && $this->core->input->get('login_password') != false) {
-            var_dump('login action');
-            foreach ($users as $user) {
-                if ($user->getName() == $this->core->input->get('login_username') && $user->getPassword() == md5($this->core->input->get('login_password'))) {
-                    var_dump('login success');
-                    $this->core->output->setSession('user', $user->getName());
-                    $this->core->user = $user;
+    public function __construct($ID = null, $vars = null, $routing = null) {
+        parent::__construct($ID, $vars, $routing);
+        $db = core::$db;
+        if (isset($_SESSION['user'])) {
+            $this->user = $_SESSION['user'];
+        }
+        if (isset($vars[':action'])) {
+            $this->action = $vars[':action'];
+            switch ($vars[':action']) {
+                case 'login' : {
+                    if (isset($_POST['email']) && isset($_POST['password'])) {
+                        $usr = $db->_select('users')
+                                   ->_where('email=:email')->_bind(':email', $_POST['email'])
+                                   ->_and('password=:pwd')->_bind(':pwd', md5($_POST['password']))
+                                   ->_execute(false);
+
+                        if (!$usr) return false;
+                        $obj = $db->_select('objects')
+                                  ->_where('id=:id')->_bind(':id', $usr['object_id'])
+                                  ->_execute(false);
+                        $type = $db->_select('types')
+                                   ->_where('id=:id')->_bind(':id', $obj['type_id'])
+                                   ->_execute(false);
+                        $this->user =  new $type['class']($obj['id'], null, null);
+                        $_SESSION['user'] = $this->user;
+//                        var_dump($this->user);
+                        return $this->user;
+                    }
                 }
+                    break;
+                case 'logout': {
+                    $this->user = null;
+                    unset($_SESSION['user']);
+                    session_unset();
+                    session_destroy();
+                    header('Location: /');
+                }
+                    break;
             }
         }
+    }
+
+    public function setOutput($async = false) {
+        parent::setOutput($async);
+        $out = core::$output;
+        $out->set('users', $this);
+
     }
 
 }
