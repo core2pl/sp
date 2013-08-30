@@ -24,9 +24,6 @@ class users extends \engine\object {
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
         $db = core::$db;
-        if (isset($_SESSION['user'])) {
-            $this->user = $_SESSION['user'];
-        }
         if (isset($vars[':action'])) {
             $this->action = $vars[':action'];
             switch ($vars[':action']) {
@@ -36,8 +33,10 @@ class users extends \engine\object {
                                    ->_where('email=:email')->_bind(':email', $_POST['email'])
                                    ->_and('password=:pwd')->_bind(':pwd', md5($_POST['password']))
                                    ->_execute(false);
-
-                        if (!$usr) return false;
+                        if (!$usr) {
+                            header('Location: /login-failure');
+                            return false;
+                        }
                         $obj = $db->_select('objects')
                                   ->_where('id=:id')->_bind(':id', $usr['object_id'])
                                   ->_execute(false);
@@ -46,7 +45,6 @@ class users extends \engine\object {
                                    ->_execute(false);
                         $this->user =  new $type['class']($obj['id'], null, null);
                         $_SESSION['user'] = $this->user;
-//                        var_dump($this->user);
                         return $this->user;
                     }
                 }
@@ -61,13 +59,20 @@ class users extends \engine\object {
                     break;
             }
         }
+        if (isset($_SESSION['user'])) {
+            $this->user = $_SESSION['user'];
+            return true;
+        }
     }
 
     public function setOutput($async = false) {
         parent::setOutput($async);
         $out = core::$output;
         $out->set('users', $this);
-
+        if ($this->vars[':action'] == 'login-failure') {
+            $this->login_failure = true;
+        }
+        $out->set('box', $out->render('login.html.twig', array('users' => $this)));
     }
 
 }
