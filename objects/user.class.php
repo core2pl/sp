@@ -17,43 +17,23 @@ class user extends \engine\object {
     public $table = 'users';
 
     public $schema = array(
-        'login' => 'string',
-        'password' => 'string',
-        'email' => 'string'
+        'email' => 'string',
+        'password' => 'password',
+        'admin' => 'boolean'
     );
+    public $email;
+
+    public $admin = false;
 
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
-        if (isset($vars[':action'])) {
-            switch ($vars[':action']) {
-                case 'login': {
-                    if (isset($_POST['email']) && isset($_POST['password']) ){
-                        if ($_POST['email'] == $this->properties['email'] && md5($_POST['password']) == $this->properties['password']) {
-                            $_SESSION['user_id'] = $this->ID;
-                        } else {
-                            header('Location: /user/login-failure');
-                        }
-                    }
-                }
-                    break;
-                case 'logout': {
-                        unset($_SESSION['user']);
-                        session_unset();
-                        session_destroy();
-                        header('Location: /');
-                }
-                    break;
-            }
-        }
+        $this->admin = ($this->properties['admin']) == 1 ? true : false;
+        $this->email = $this->properties['email'];
+        $this->properties['email'];
     }
 
     public function setOutput($async = false) {
         $out = core::$output;
-        $out->set('user', array(
-            'logged' => $this->isLoggedIn(),
-            'email' => $this->properties['email'],
-            'login_failure' => (($this->vars[':action'] == 'login-failure') ? true : false)
-        ));
     }
 
     public function isLoggedIn() {

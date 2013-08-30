@@ -9,7 +9,7 @@ class page extends \engine\object {
      *
      * @var string
      */
-    public $table = 'pages';
+    public  $table = 'pages';
 
     /**
      * Pola tabeli z właściwościami obiektu
@@ -23,6 +23,8 @@ class page extends \engine\object {
         'content' => 'text',
         'template' => 'string'
     );
+
+    public $content;
 
     /**
      * @param int $ID
@@ -39,9 +41,16 @@ class page extends \engine\object {
     public function setOutput($async = false) {
         parent::setOutput($async);
         $output = \engine\core::$output;
+        if (empty($this->properties['template'])) {
+            $content = $this->properties['content'];
+        } else {
+            $this->content = $this->properties['content'];
+            $content = $output->render($this->properties['template'], array('page' => $this));
+        }
+
         $output->set('page', array(
             'title' => $this->properties['title'],
-            'content' => (empty($this->properties['template'])) ? $this->properties['content'] : $output->render($this->properties['template'], $output->dataCache),
+            'content' => $content,
             'vars' => $this->vars
         ));
         return $output;

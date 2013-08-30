@@ -1,14 +1,27 @@
 {% if not installer.installed %}
-    <form action="/installer/install" method="post" class="bs-example form-horizontal">
-        <fieldset>
-            <div class="form-group">
-                <div class="col-lg-10">
-                    <input type="text" class="form-control" id="inputDefault" placeholder="Klasa" name="class-name">
-                </div>
-                <button type="submit" class="btn btn-primary">Zainstaluj</button>
-            </div>
-        </fieldset>
-    </form>
+    <div class="panel panel-warning">
+        <div class="panel-heading">
+            <h3 class="panel-title">Instalator klas php</h3>
+        </div>
+        <div class="panel-body">
+            <form action="/installer/install" method="post" class="bs-example form-horizontal">
+                <fieldset>
+                    <div class="form-group">
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputDefault" placeholder="\foo\bar\class" name="class-name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-10">
+                            <button type="submit" class="btn btn-primary">Zainstaluj</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+
 {% else %}
     Zainstalowano klasę: {{ installer.class }}.<br />
     Następuje przekierowanie...
