@@ -32,28 +32,24 @@ class router {
         preg_match_all('#:[a-zA-Z0-9_*]+#',$routing, $vars);
         $uri_array = preg_split('#[\s/]+#', $uri);
         $routing_array = preg_split('#[\s/]+#', $routing);
-        if (in_array(':**', $routing_array)) return true;
-        foreach ($uri_array as $key=>$step) {
-//            var_dump($routing_array);
-            if (!isset($routing_array[$key])) {
-                return false;
-            } elseif (preg_match('#:[a-zA-Z0-9_\*]#', $routing_array[$key])) {
-                $variables[$routing_array[$key]] = $uri_array[$key];
-//                var_dump($routing_array[$key]);
-                if (($routing_array[$key] == ':**') || ($routing_array[$key] == ':*' && $key >= array_search(':*', $routing_array))) {
-                    $vars = $variables;
-//                    var_dump('ok');
-                    return true;
+        if (count($uri_array) != count($routing_array) && !in_array(':*', $routing_array)) {
+            return false;
+        } else {
+            foreach ($uri_array as $key=>$step) {
+                if (preg_match('#:[a-zA-Z0-9_\*]#', $routing_array[$key])) {
+                    $variables[$routing_array[$key]] = $uri_array[$key];
+                    if ($routing_array[$key] == ':*') {
+                        $vars = $variables;
+                        var_dump($vars = $variables);
+                        return true;
+                    }
+                } elseif($routing_array[$key] != $uri_array[$key]) {
+                    return false;
                 }
-            } elseif ($routing_array[$key] != $uri_array[$key]) {
-                return false;
-            } elseif (count($routing_array) != count($uri_array)) {
-                return false;
             }
-
+            $vars = $variables;
+            return true;
         }
-        $vars = $variables;
-        return true;
     }
 
 }
