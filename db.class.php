@@ -232,6 +232,10 @@ class db {
         }
     }
 
+    public function _lastId() {
+        return $this->pdo->lastInsertId();
+    }
+
 }
 
 ?>
