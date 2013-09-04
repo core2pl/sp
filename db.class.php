@@ -4,7 +4,7 @@ namespace engine;
 
 class db {
 
-    public $pdo;
+    public $pdo = null;
 
     public $stmt;
 	public $bind;
@@ -13,7 +13,10 @@ class db {
 	    
     public function __construct() {
         $this->pdo = $this->connect();
-        return $this; 
+    }
+
+    public function isConnected() {
+        return (boolean)($this->pdo);
     }
     
     public function _select($table) {
@@ -152,6 +155,7 @@ class db {
     
     public function connect() {
         $config = core::$config;
+        if (!isset($config['db'])) return false;
         try {
             switch ($config['db']['db_type']) {
                 case 'sqlite':
