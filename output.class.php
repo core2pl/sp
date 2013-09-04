@@ -23,9 +23,10 @@ class output {
      * Konstruktor inicjujący środowisko Twig'a
      */
     public function __construct() {
+        $config = core::$config;
         require_once './Twig/lib/Twig/Autoloader.php';
-        \Twig_Autoloader::register();
-        $loader = new \Twig_Loader_Filesystem(array('./views', './engine/views'));
+        \Twig_Autoloader::register(true);
+        $loader = new \Twig_Loader_Filesystem(array('./themes/'.$config['theme'].'/views'));
         $this->twig = new \Twig_Environment($loader, array('debug' => true));
         $this->twig->addExtension(new \Twig_Extension_Debug());
 		return $this;

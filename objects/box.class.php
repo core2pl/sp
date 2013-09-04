@@ -23,6 +23,9 @@ class box extends \engine\object {
         'title' => 'string'
     );
 
+    public $showInAdminPanel = true;
+    public $adminPanelName = 'Boksy';
+
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
     }

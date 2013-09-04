@@ -40,7 +40,6 @@ class router {
                     $variables[$routing_array[$key]] = $uri_array[$key];
                     if ($routing_array[$key] == ':*') {
                         $vars = $variables;
-                        var_dump($vars = $variables);
                         return true;
                     }
                 } elseif($routing_array[$key] != $uri_array[$key]) {
@@ -51,5 +50,4 @@ class router {
             return true;
         }
     }
-
 }

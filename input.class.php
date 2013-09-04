@@ -37,8 +37,12 @@ class input {
      * @return mixed Zwraca całość lub fragment konfiguracji, lub false w przypadku błędu
      */
     public function getConfig($part = null) {
-        require './config.php';
-        $this->config = $config; 
+        if (file_exists('./config.php')) {
+            require './config.php';
+        } else {
+            require './engine/config.default.php';
+        }
+        $this->config = $config;
         if ($part == null) {
             return $config;
         } elseif(isset($config[$part])) {

@@ -25,11 +25,16 @@ class user extends \engine\object {
 
     public $admin = false;
 
+    public $showInAdminPanel = true;
+    public $adminPanelName = 'Użytkownicy';
+
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
-        $this->admin = ($this->properties['admin']) == 1 ? true : false;
-        $this->email = $this->properties['email'];
-        $this->properties['email'];
+        if (isset($this->ID)){
+            $this->admin = ($this->properties['admin']) == 1 ? true : false;
+            $this->email = $this->properties['email'];
+            $this->properties['email'];
+        }
     }
 
     public function setOutput($async = false) {

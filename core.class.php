@@ -33,13 +33,13 @@ class core {
         self::$output = new output();
         self::$objects = new objects();
         self::$pathObjects = self::$objects->getObjects();
-
     }
 
     /**
      * Metoda wyświetlająca zawartość strony
      */
     public function showSite() {
+
         self::$output->showSite();
     }
 

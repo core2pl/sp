@@ -1,57 +1,150 @@
 <div class="panel panel-default">
     <div class="panel-body">
-        <div class="fright">
-            <div class="btn-group">
-                <button type="button" class="btn btn-default" onclick="getElementById('edit-form').submit();">Zapisz</button>
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-                <ul class="dropdown-menu">
-                    <li><a href="#">Usuń</a></li>
-                    <li class="divider"></li>
-                    <li><a href="/">Anuluj</a></li>
-                </ul>
+        {% if action == 'edit' or action == 'update' %}
+            <div class="save-button">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" onclick="getElementById('edit-form').submit();">Zapisz</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Usuń</a></li>
+                        <li class="divider"></li>
+                        <li><a href="/">Anuluj</a></li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        <form class="bs-example form-horizontal" id="edit-form" method="post" action="/objects/{{ object.ID }}/update">
-            <fieldset>
-                <legend>{{ object.class }} #{{ object.ID }} </legend>
-                {%  for name, type in object.schema %}
-                    {% if type == 'string' %}
-                        <div class="form-group">
-                            <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
-                            <div class="col-lg-10">
-                                <input type="text" class="form-control" id="inputEmail" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if type == 'password' %}
-                        <div class="form-group">
-                            <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
-                            <div class="col-lg-10">
-                                <input type="password" class="form-control" id="inputPassword" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if type == 'text' %}
-                        <div class="form-group">
-                            <label for="textArea" class="col-lg-2 control-label">{{ name }}</label>
-                            <div class="col-lg-10">
-                                <textarea class="form-control" rows="3" id="textArea" name="{{ name }}">{{ object.properties[name] }}</textarea>
-                            </div>
-                        </div>
-                    {% endif %}
-                    {% if type == 'boolean' %}
-                        <div class="form-group">
-                            <div class="col-lg-10">
-                                <div class="checkbox">
-                                    <label>
-                                        <input name="{{ name }}" value="1" type="checkbox"{% if object.properties[name] %} checked{% endif %}> {{ name }}
-                                    </label>
+            <form class="bs-example form-horizontal" id="edit-form" method="post" action="/objects/{{ object.ID }}/update">
+                <fieldset>
+                    <legend>{{ object.class }} #{{ object.ID }} </legend>
+                    {%  for name, type in object.schema %}
+                        {% if type == 'string' %}
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="inputEmail" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
                                 </div>
                             </div>
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                        {% if type == 'password' %}
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <input type="password" class="form-control" id="inputPassword" placeholder="{{ name }}" name="{{ name }}" value="{{ object.properties[name] }}">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if type == 'text' %}
+                            <div class="form-group">
+                                <label for="textArea" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <textarea class="form-control ckeditor" rows="3" id="textArea" name="{{ name }}">{{ object.properties[name] }}</textarea>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if type == 'boolean' %}
+                            <div class="form-group">
+                                <div class="col-lg-10">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="{{ name }}" value="1" type="checkbox"{% if object.properties[name] %} checked{% endif %}> {{ name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+            </form>
+        {% endif %}
+        {% if action == 'show' %}
+            <ul class="list-group">
+                {% for type in types %}
+                <a href="/types/{{ type.id }}/show-objects" class="list-group-item">
+                    <span class="badge">{{ type.count }}</span>
+                    {{ type.name }}
+                </a>
                 {% endfor %}
-            </fieldset>
-        </form>
+            </ul>
+            <ul class="nav nav-pills fright">
+                <li class=""><a href="/objects/add">Dodaj</a></li>
+            </ul>
+        {% endif %}
+        {% if action == 'show-objects' %}
+            <ul class="list-group">
+                {% for object in objects %}
+                    <a href="/objects/{{ object.id }}/edit" class="list-group-item">
+                        #{{ object.id }} {{ object.name }}
+                    </a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if action == 'add' %}
+            <ul class="list-group">
+                {% for type in types %}
+                    <a href="/types/{{ type.id }}/add" class="list-group-item">
+                        {{ type.name }}
+                    </a>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% if action == 'add' and type and object %}
+            <div class="save-button">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default" onclick="getElementById('edit-form').submit();">Dodaj</button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li class="divider"></li>
+                        <li><a href="/">Anuluj</a></li>
+                    </ul>
+                </div>
+            </div>
+            <form class="bs-example form-horizontal" id="edit-form" method="post" action="/types/{{ type.id }}/add-process">
+                <fieldset>
+                    <legend>Nowy obiekt {{ object.name }} </legend>
+                    <div class="form-group">
+                        <label for="inputEmail" class="col-lg-2 control-label">Nazwa</label>
+                        <div class="col-lg-10">
+                            <input type="text" class="form-control" id="inputEmail" placeholder="Nazwa" name="o_name" value="">
+                        </div>
+                    </div>
+                    {%  for name, type in object.schema %}
+                        {% if type == 'string' %}
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <input type="text" class="form-control" id="inputEmail" placeholder="{{ name }}" name="{{ name }}" value="">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if type == 'password' %}
+                            <div class="form-group">
+                                <label for="inputEmail" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <input type="password" class="form-control" id="inputPassword" placeholder="{{ name }}" name="{{ name }}" value="">
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if type == 'text' %}
+                            <div class="form-group">
+                                <label for="textArea" class="col-lg-2 control-label">{{ name }}</label>
+                                <div class="col-lg-10">
+                                    <textarea class="form-control ckeditor" rows="3" id="textArea" name="{{ name }}"></textarea>
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if type == 'boolean' %}
+                            <div class="form-group">
+                                <div class="col-lg-10">
+                                    <div class="checkbox">
+                                        <label>
+                                            <input name="{{ name }}" value="1" type="checkbox"> {{ name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </fieldset>
+            </form>
+        {% endif %}
     </div>
 </div>

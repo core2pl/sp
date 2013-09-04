@@ -18,6 +18,9 @@ class installer extends \engine\object {
 
     private $installed = false;
 
+    public $showInAdminPanel = false;
+    public $adminPanelName = 'Instalator klas php';
+
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);
         $objects = core::$objects;
