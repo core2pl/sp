@@ -20,6 +20,8 @@ class users extends \engine\object {
     public $action = false;
     public $template = 'users.html.twig';
 
+    public $showInAdminPanel = false;
+    public $adminPanelName = 'Użytkownicy';
 
     public function __construct($ID = null, $vars = null, $routing = null) {
         parent::__construct($ID, $vars, $routing);

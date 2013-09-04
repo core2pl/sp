@@ -26,6 +26,9 @@ class page extends \engine\object {
 
     public $content;
 
+    public $showInAdminPanel = true;
+    public $adminPanelName = 'Strony';
+
     /**
      * @param int $ID
      * @param array $vars

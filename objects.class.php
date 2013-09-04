@@ -29,27 +29,41 @@ class objects {
     public function getObjects() {
         $db = core::$db;
         $config = core::$config;
+        $config = core::$config;
         $router = core::$router;
         $obj = array();
         $path = explode('?',urldecode($_SERVER['REQUEST_URI']));
         $path = str_replace($config['site']['root_directory'], '', $path[0]);
-        $routings = $db->_select('routings')->_orderBy('priority', false)->_execute(true);
-        if (!count($routings)) return;
-        foreach ($routings as $routing) {
-            if ($router->match($path, $routing['routing'], $vars)) {
-                $objects = $db->_select('objects')
-                    ->_where('id=:id')->_bind(':id', $routing['object_id'])
-                    ->_execute(true);
-                foreach ($objects as $object) {
-                    $type = $db->_select('types')
-                        ->_where('id=:id')->_bind(':id', $object['type_id'])
-                        ->_execute();
+        //    var_dump($db->isConnected());
+        if ($db->isConnected()){
+            $routings = $db->_select('routings')->_orderBy('priority', false)->_execute(true);
+            foreach ($routings as $routing => $class) {
+                if ($router->match($path, $routing, $vars)) {
+                    $objects = $db->_select('objects')
+                        ->_where('id=:id')->_bind(':id', $routing['object_id'])
+                        ->_execute(true);
+                    foreach ($objects as $object) {
+                        $type = $db->_select('types')
+                            ->_where('id=:id')->_bind(':id', $object['type_id'])
+                            ->_execute();
 //                    if (!isset($obj[$type['class']]) || count($obj[$type['class']]->vars) < count($vars)) {
-                         $obj[$type['class']] = new $type['class']($object['id'],$vars,$routing['routing']);
+                        $obj[$type['class']] = new $type['class']($object['id'],$vars,$routing['routing']);
 //                    }
+                    }
+                }
+            }
+        } else {
+            $routings = $config['routings'];
+            foreach ($routings as $routing => $class) {
+                if ($router->match($path, $routing, $vars)) {
+                    $obj[$type['class']] = new $class(null,$vars,$routing);
                 }
             }
         }
+
+
+        if (!count($routings)) return;
+
 //        var_dump($obj);
         return $obj;
     }
