@@ -32,6 +32,7 @@ class router {
         preg_match_all('#:[a-zA-Z0-9_*]+#',$routing, $vars);
         $uri_array = preg_split('#[\s/]+#', $uri);
         $routing_array = preg_split('#[\s/]+#', $routing);
+//        var_dump($uri, $routing);
         if (count($uri_array) != count($routing_array) && !in_array(':*', $routing_array)) {
             return false;
         } else {
