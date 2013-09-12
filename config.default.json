@@ -1,0 +1,11 @@
+{
+    "site":
+        {
+            "root_directory": "/"
+        },
+    "theme":"default",
+    "routings":
+        {
+            "/install/:action": "\\engine\\objects\\installer"
+        }
+}

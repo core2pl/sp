@@ -33,8 +33,13 @@ class objects {
         $router = core::$router;
         $obj = array();
         $path = explode('?',urldecode($_SERVER['REQUEST_URI']));
-        $path = str_replace($config['site']['root_directory'], '', $path[0]);
-        //    var_dump($db->isConnected());
+        if ($config['site']['root_directory'] != '/') {
+            $path = preg_replace('#'.$config['site']['root_directory'].'#', '', $path[0],1);
+        } else {
+            $path = $path[0];
+        }
+//        $path = str_replace($config['site']['root_directory'], '', $path[0]);
+//            var_dump($db->isConnected());
         if ($db->isConnected()){
             $routings = $db->_select('routings')->_orderBy('priority', false)->_execute(true);
             foreach ($routings as $routing => $class) {
@@ -54,11 +59,15 @@ class objects {
             }
         } else {
             $routings = $config['routings'];
+//            var_dump($routings);
             foreach ($routings as $routing => $class) {
+//                var_dump($path);
                 if ($router->match($path, $routing, $vars)) {
-                    $obj[$type['class']] = new $class(null,$vars,$routing);
+//                    var_dump('match!');
+                    $obj[$class] = new $class(null,$vars,$routing);
                 }
             }
+            var_dump($obj);
         }
 
 

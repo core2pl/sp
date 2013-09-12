@@ -40,7 +40,8 @@ class input {
         if (file_exists('./config.php')) {
             require './config.php';
         } else {
-            require './engine/config.default.php';
+            $t = file_get_contents('./engine/config.default.json');
+            $config = json_decode($t, true);
         }
         $this->config = $config;
         if ($part == null) {
