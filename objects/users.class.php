@@ -56,7 +56,7 @@ class users extends \engine\object {
                     unset($_SESSION['user']);
                     session_unset();
                     session_destroy();
-                    header('Location: /');
+//                    header('Location: /');
                 }
                     break;
             }
