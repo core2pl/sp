@@ -53,7 +53,7 @@ class installer {
             } break;
             case 'addones' : {
                 if (isset($_POST['theme']) && !file('./themes/'.str_replace('theme_', '', $_POST['theme'].'/'))) {
-                    var_dump(exec('git clone http://github.com/core2pl/'.$_POST['theme'].'.git ./themes/'.str_replace('theme_', '', $_POST['theme'])));
+                    exec('git clone http://github.com/core2pl/'.$_POST['theme'].'.git ./themes/'.str_replace('theme_', '', $_POST['theme']));
                 }
                 if (isset($_POST['theme'])) {
                     core::$config['theme'] = str_replace('theme_', '', $_POST['theme']);
