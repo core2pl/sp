@@ -69,7 +69,7 @@ class objects {
                     $obj[$class] = new $class(null,$vars,$routing);
                 }
             }
-            var_dump($obj);
+//            var_dump($obj);
         }
 
 
