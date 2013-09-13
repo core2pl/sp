@@ -104,6 +104,9 @@ class db {
     
     public function _executeSelect($keepInArray = false) {
     	$objects = array();
+        if ($this->pdo == null) {
+            return false;
+        }
     	$results = $this->pdo->prepare($this->stmt);
     	$this->stmt = null;
         if ($this->bind != null) {
@@ -246,9 +249,9 @@ class db {
 
     public function _executeCreateTable() {
         $this->stmt .= ')';
-//        var_dump($this->pdo);
+        var_dump($this->pdo);
         $results = $this->pdo->prepare($this->stmt);
-//        var_dump($results);
+        var_dump($results);
         $results->execute();
 //        var_dump($results->errorInfo());
 //        var_dump();
