@@ -45,7 +45,7 @@ class installer {
                                 'site' => array(
                                     'root_directory' => core::$config['site']['root_directory']
                                 )
-                            ), JSON_PRETTY_PRINT));
+                            ), \JSON_PRETTY_PRINT));
                         }
                         header('Location: /install/addones');
                     }
@@ -57,7 +57,7 @@ class installer {
                 }
                 if (isset($_POST['theme'])) {
                     core::$config['theme'] = str_replace('theme_', '', $_POST['theme']);
-                    file_put_contents('./config.json', json_encode(core::$config, JSON_PRETTY_PRINT));
+                    file_put_contents('./config.json', json_encode(core::$config, \JSON_PRETTY_PRINT));
                     header('Location: /install/user');
                 }
             } break;
