@@ -40,10 +40,12 @@ class objects {
         }
 //        $path = str_replace($config['site']['root_directory'], '', $path[0]);
 //            var_dump($db->isConnected());
-        if ($db->isConnected()){
-            $routings = $db->_select('routings')->_orderBy('priority', false)->_execute(true);
-            foreach ($routings as $routing => $class) {
-                if ($router->match($path, $routing, $vars)) {
+        $routings = $db->_select('routings')->_orderBy('priority', false)->_execute(true);
+//        var_dump($routings);
+        if ($db->isConnected() && $routings != null){
+            foreach ($routings as $routing) {
+//                var_dump($routing);
+                if ($router->match($path, $routing['routing'], $vars)) {
                     $objects = $db->_select('objects')
                         ->_where('id=:id')->_bind(':id', $routing['object_id'])
                         ->_execute(true);

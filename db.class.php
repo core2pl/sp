@@ -12,7 +12,7 @@ class db {
 	public $values;
 	    
     public function __construct() {
-        $this->pdo = $this->connect();
+        $this->connect();
     }
 
     public function isConnected() {
@@ -87,15 +87,19 @@ class db {
     }
     
     public function _execute($keepInArray = false) {
-    	switch ($this->queryType) {
-    		case 'select': return $this->_executeSelect($keepInArray); break;
-    		case 'insert': return $this->_executeInsert(); break;
-    		case 'update': return $this->_executeUpdate(); break;
-    		case 'delete': return $this->_executeDelete(); break;
-            case 'create-table': return $this->_executeCreateTable(); break;
-    	}
-    	$this->queryType = null;
-    	$this->bind = null;
+        try {
+            switch ($this->queryType) {
+                case 'select': return $this->_executeSelect($keepInArray); break;
+                case 'insert': return $this->_executeInsert(); break;
+                case 'update': return $this->_executeUpdate(); break;
+                case 'delete': return $this->_executeDelete(); break;
+                case 'create-table': return $this->_executeCreateTable(); break;
+            }
+            $this->queryType = null;
+            $this->bind = null;
+        } catch (\PDOException $e) {
+            return null;
+        }
     }	
     
     public function _executeSelect($keepInArray = false) {
@@ -153,23 +157,52 @@ class db {
     	$results->execute();
     }
     
-    public function connect() {
-        $config = core::$config;
+    public function connect($config = null) {
+        if ($config == null) {
+            $config = core::$config;
+        }
+//        var_dump($config);
         if (!isset($config['db'])) return false;
         try {
             switch ($config['db']['db_type']) {
                 case 'sqlite':
-                    $conn = $pdo = new \PDO('sqlite:'.$config['db']['db_path']);
+                    try {
+                        $pdo = new \PDO('sqlite:'.$config['db']['db_path']);
+                    } catch (\PDOException $e) {
+                        return false;
+                    }
                     break;
                 case 'mysql':
-                    $conn = $pdo = new \PDO('mysql:host='.$config['db']['db_host'].';dbname='.$config['db']['db_name'], $config['db']['db_user'], $config['db']['db_pass']);
+                    try {
+                        $pdo = new \PDO('mysql:host='.$config['db']['db_host'].';dbname='.$config['db']['db_name'], $config['db']['db_user'], $config['db']['db_pass'], array(\PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION));
+                        $res = $pdo->prepare('SHOW DATABASES');
+                        $this->pdo = $pdo;
+                        return $res->execute();
+                    } catch (\PDOException $e) {
+                        return false;
+                    }
+
                     break;
             }
-            $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $e) {
+            //$pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+//            var_dump($this->test($pdo));
+        } catch (\PDOException $e) {
             echo '<span style="color: red;">Jakiś błąd: '.$e->getMessage().'</span>';
+            return false;
         }
+        $this->pdo = $pdo;
         return $pdo;
+    }
+
+    public function test($DBH){
+        try{
+            $DBH->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+            $DBH->prepare('SELECT * FROM users');
+        }
+        catch(\PDOException $e) {
+            echo $e->getMessage();
+            return false;
+        }
     }
 
     public function addObject(&$object) {
@@ -213,7 +246,12 @@ class db {
 
     public function _executeCreateTable() {
         $this->stmt .= ')';
+//        var_dump($this->pdo);
         $results = $this->pdo->prepare($this->stmt);
+//        var_dump($results);
+        $results->execute();
+//        var_dump($results->errorInfo());
+//        var_dump();
         return $results->execute();
     }
     
