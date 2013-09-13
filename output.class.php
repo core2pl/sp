@@ -76,6 +76,7 @@ class output {
      */
     public function showSite() {
         $this->prepareObjects();
+        $this->set('theme', core::$config['theme']);
         if (!core::$input->isAjaxRequest()){
             echo $this->twig->render('_layout.html.twig', $this->dataCache);
     } else {

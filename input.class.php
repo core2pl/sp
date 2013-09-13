@@ -37,8 +37,9 @@ class input {
      * @return mixed Zwraca całość lub fragment konfiguracji, lub false w przypadku błędu
      */
     public function getConfig($part = null) {
-        if (file_exists('./config.php')) {
-            require './config.php';
+        if (file_exists('./config.json')) {
+            $config = json_decode(file_get_contents('./config.json'), true);
+
         } else {
             $t = file_get_contents('./engine/config.default.json');
             $config = json_decode($t, true);
