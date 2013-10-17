@@ -140,6 +140,7 @@ class db {
             unset($this->bind[$alias]);
         }
     	$results->execute();
+        return $this->_lastId();
     }
     
     public function _executeUpdate() {
