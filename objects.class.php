@@ -31,7 +31,6 @@ class objects {
     public function getObjects() {
         $db = core::$db;
         $config = core::$config;
-        $config = core::$config;
         $router = core::$router;
         $obj = array();
         $path = explode('?',urldecode($_SERVER['REQUEST_URI']));
@@ -82,6 +81,14 @@ class objects {
     }
 
     public function getEntities() {
+        if (!file_exists('./config.json')) {
+            foreach (core::$config['routings'] as $routing=>$class) {
+                if (core::$router->match(core::$path,$routing, $vars)) {
+                    $this->entities[] = new $class(null, $routing, $vars);
+                }
+            }
+            return $this->entities;
+        }
         $entities = core::$db->_select('entities')->_execute(true);
         if ($entities != null) {
             foreach ($entities as $entity) {
