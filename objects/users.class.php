@@ -71,12 +71,7 @@ class users extends \engine\object {
         parent::setOutput($async);
         $out = core::$output;
         $out->set('users', $this);
-        if (isset($this->vars[':action'])){
-            if ($this->vars[':action'] == 'login-failure') {
-                $this->login_failure = true;
-            }
-            $out->set('box', $out->render('login.html.twig', array('users' => $this)));
-        }
+        $out->set('login_box', $out->render('login.html.twig', array('users' => $this)));
     }
 
 }

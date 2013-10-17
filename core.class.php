@@ -19,7 +19,8 @@ class core {
     public static $db;
     public static $output;
     public static $objects;
-    public static $pathObjects;
+    public static $path;
+    public $entities;
 
     /**
      * Konstruktor tworzący obiekty wszystkich potrzebnych modułów
@@ -28,11 +29,25 @@ class core {
         session_start();
         self::$router = new router();
         self::$input = new input();
+        self::$path = self::$input->getPath();
         self::$config = self::$input->getConfig();
         self::$db = new db();
         self::$output = new output();
         self::$objects = new objects();
-        self::$pathObjects = self::$objects->getObjects();
+
+//        $page = new \engine\objects\page();
+//        self::$objects->add($page, '/login');
+        $this->entities = self::$objects->getEntities();
+//        $page = $this->entities[3];
+  //      $page->title = 'strona logowania 1';
+//        $page->save();
+
+//        var_dump($this->entities);
+
+
+
+       // var_dump(getenv('DB_NAME'));
+     //   var_dump(get_object_vars($this));
     }
 
     /**
@@ -40,7 +55,7 @@ class core {
      */
     public function showSite() {
 
-        self::$output->showSite();
+        self::$output->showSite($this);
     }
 
     /**

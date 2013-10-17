@@ -36,7 +36,7 @@ class object {
         $this->vars = $vars;
         $this->routing = $routing;
         $db = core::$db;
-        if ($this->table && $db->_tableExists($this->table)) {
+        if ($this->table && $db->_tableExists($this->table) && $this->ID != null) {
             $properties = $db->_select($this->table)
                 ->_where('object_id=:id')->_bind(':id', $this->ID)
                 ->_execute(false);
@@ -44,6 +44,7 @@ class object {
             foreach ($properties as $name=>$value) {
                 if (!in_array($name, array('id', 'object_id'))) {
                     $this->properties[$name] = $value;
+                    $this->$name = $value;
                 }
             }
         }
@@ -56,6 +57,33 @@ class object {
      */
     public function setOutput($async = false) {
 
+    }
+
+    public function save() {
+        if ($this->table == false || empty($this->schema)) { return false; }
+        $obj = core::$db->_select($this->table)->_where('id='.$this->ID)->_execute(true);
+//        var_dump($this);
+        if ($obj != null) {
+            $stmt = core::$db->_update($this->table);
+            foreach ($this->schema as $key=>$type) {
+                $stmt->_set($key, ':'.$key)->_bind(':'.$key, $this->$key);
+            }
+            $stmt = $stmt->_where('object_id='.$this->ID)->_execute(true);
+            var_dump($stmt);
+        } else {
+            $stmt = core::$db->_insert($this->table);
+            foreach ($this->schema as $key=>$type) {
+                $stmt->_value($key, ':'.$key)->_bind(':'.$key, $this->$$key);
+            }
+            $stmt->_execute(true);
+        }
+    }
+
+    public function set($data) {
+        foreach ($data as $key=>$value) {
+            $this->$key = $value;
+        }
+        return $this;
     }
 
 }
