@@ -91,13 +91,18 @@ class installer {
                     core::$objects->install('\engine\objects\user');
                     core::$objects->install('\engine\objects\users');
 
-                    core::$db->_insert('objects')
-                            ->_value('type_id', ':type')->_bind(':type', 1)
-                            ->_value('priority', ':prior')->_bind(':prior', 2)
-                            ->_value('name', ':name')->_bind(':name', 'Home')
-                            ->_execute();
+//                    core::$objects->add();
+                    $mainpage = new \engine\objects\page();
+                    core::$objects->add($mainpage, '/');
+                    $mainpage
+                        ->set(['title' =>'core2.pl - Strona główna'])
+                        ->set(['content' => '<h1>core2.pl</h1><h2>System zainstalowany poprawnie!</h2>'])
+                        ->save();
 
-                    core::$db->_insert('objects')
+
+
+
+/*                    core::$db->_insert('objects')
                         ->_value('type_id', ':type')->_bind(':type', 2)
                         ->_value('priority', ':prior')->_bind(':prior', 1)
                         ->_value('name', ':name')->_bind(':name', '')
@@ -109,11 +114,7 @@ class installer {
                         ->_value('name', ':name')->_bind(':name', '')
                         ->_execute();
 
-                    core::$db->_insert('routings')
-                        ->_value('object_id', ':oid')->_bind(':oid', 1)
-                        ->_value('routing', ':routing')->_bind(':routing', '/')
-                        ->_value('priority', ':prior')->_bind(':prior', 2)
-                        ->_execute();
+
 
                     core::$db->_insert('routings')
                         ->_value('object_id', ':oid')->_bind(':oid', 2)
@@ -127,10 +128,7 @@ class installer {
                         ->_value('priority', ':prior')->_bind(':prior', 1)
                         ->_execute();
 
-                    core::$db->_insert('pages')
-                         ->_value('object_id', ':oid')->_bind(':oid', 1)
-                         ->_value('template', ':tpl')->_bind(':tpl', 'page.html.twig')
-                         ->_execute();
+
 
                     core::$db->_insert('users')
                         ->_value('object_id', ':oid')->_bind(':oid', 2)
@@ -138,7 +136,7 @@ class installer {
                         ->_value('password', ':pass')->_bind(':pass', md5($_POST['password']))
                         ->_value('admin', ':admin')->_bind(':admin', '1')
                         ->_execute();
-                    header('Location: /');
+                    header('Location: /');*/
                 }
             }
         }

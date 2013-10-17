@@ -9,7 +9,12 @@ class page extends \engine\object {
      *
      * @var string
      */
-    public  $table = 'pages';
+    public $table = 'pages';
+
+    public $title = '';
+    public $keywords;
+    public $description;
+    public $template = 'page.html.twig';
 
     /**
      * Pola tabeli z właściwościami obiektu
@@ -44,11 +49,13 @@ class page extends \engine\object {
     public function setOutput($async = false) {
         parent::setOutput($async);
         $output = \engine\core::$output;
+        $output->set('page', $this);
+
         if (empty($this->properties['template'])) {
             $content = $this->properties['content'];
         } else {
             $this->content = $this->properties['content'];
-            $content = $output->render($this->properties['template'], array('page' => $this));
+            $content = $output->render($this->properties['template'], $output->dataCache);
         }
 
         $output->set('page', array(

@@ -9,6 +9,11 @@ namespace engine;
  * @package engine
  */
 class output {
+
+    /**
+     * @var $core
+     */
+    private $core;
     /**
      * @var \Twig_Environment Zmienna przechowująca obiekt środowiska Twig
      */
@@ -22,7 +27,8 @@ class output {
     /**
      * Konstruktor inicjujący środowisko Twig'a
      */
-    public function __construct() {
+    public function __construct($core = null) {
+        $this->core = $core;
         $config = core::$config;
         require_once './Twig/lib/Twig/Autoloader.php';
         \Twig_Autoloader::register(true);
@@ -52,11 +58,14 @@ class output {
      * Metoda inicjująca zapisane do bufora wyjściowego danch każdego obiektu z aktualnej ściezki
      */
     public function prepareObjects() {
-        $async = core::$input->isAjaxRequest();
-        if (!count(core::$pathObjects)) return false;
+
+
+//        var_dump('ptr');
+        /*if (!count(core::$pathObjects)) return false;
         foreach (core::$pathObjects as $object) {
             $object->setOutput($async);
-        }
+        }*/
+
     }
 
     /**
@@ -74,8 +83,12 @@ class output {
      * Metoda wyświetlająca domyślny layout lub w przypadku AJAX'owego żądania zwracająca zakodowaną w formacie JSON
      * tablicę bufora danych wyjściowych
      */
-    public function showSite() {
-        $this->prepareObjects();
+    public function showSite($core) {
+        $async = core::$input->isAjaxRequest();
+        foreach ($core->entities as $entity) {
+            $entity->setOutput($async);
+        }
+//        $this->prepareObjects();
         $this->set('theme', core::$config['theme']);
         if (!core::$input->isAjaxRequest()){
             echo $this->twig->render('_layout.html.twig', $this->dataCache);
@@ -85,7 +98,7 @@ class output {
 	}
 
     /**
-     * Metoda zapsująca dane do sesji
+     * Metoda zaipsująca dane do sesji
      *
      * @deprecated Metoda powinna zostać usunięta
      *

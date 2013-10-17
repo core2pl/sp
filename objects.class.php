@@ -17,6 +17,8 @@ namespace engine;
  */
 class objects {
 
+    public $entities;
+
     public function __construct() {
 //        $this->install('\engine\objects\user');
     }
@@ -76,7 +78,43 @@ class objects {
         if (!count($routings)) return;
 
 //        var_dump($obj);
-        return $obj;
+        //return $obj;
+    }
+
+    public function getEntities() {
+        $entities = core::$db->_select('entities')->_execute(true);
+        if ($entities != null) {
+            foreach ($entities as $entity) {
+                if (core::$router->match(core::$path, $entity['path'], $vars)) {
+                    $this->entities[$entity['id']] = new $entity['class']($entity['id'],$vars,core::$path);
+                }
+            }
+            return $this->entities;
+        }
+    }
+
+    public function add(&$object, $path = null) {
+        if ($path == null) { $path = core::$path; }
+        core::$db->_insert('entities')
+                 ->_value('path', ':path')->_bind(':path', $path)
+                 ->_value('class', ':c')->_bind(':c', get_class($object))
+                 ->_execute();
+
+        $object->ID = core::$db->_lastId();
+        //var_dump($object);
+//                            ->_value('')
+        //if ($path == null) $path = ;
+        /*core::$db->_insert('entities')
+                 ->_value()
+        var_dump($object);*/
+        /*$objID = core::$db->_insert('objects')
+                          ->_value('')
+//        core::$db->_insert()*/
+    }
+
+    public function shortClass($object) {
+        $class = explode('\\', get_class($this));
+        return end($class);
     }
 
     /**
@@ -99,6 +137,9 @@ class objects {
             $result->_execute();
         }
         $db->_insert('types')->_value('class', ':class')->_bind(':class',$class)->_execute();
+        $obj->ID = $db->_lastId();
+        $class = $this->shortClass($obj);
+        core::$$class = $obj;
     }
 
 }

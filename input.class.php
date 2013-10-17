@@ -91,6 +91,16 @@ class input {
     public function isAjaxRequest() {
         return ($this->get('new_url')) ? true : false;
     }
+
+    public function getPath() {
+        $path = explode('?',urldecode($_SERVER['REQUEST_URI']));
+        if (core::$config['site']['root_directory'] != '/') {
+            $path = preg_replace('#'.core::$config['site']['root_directory'].'#', '', $path[0],1);
+        } else {
+            $path = $path[0];
+        }
+        return $path;
+    }
     
 }
 
